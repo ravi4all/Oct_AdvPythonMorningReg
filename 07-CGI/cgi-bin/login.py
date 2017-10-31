@@ -14,16 +14,9 @@ usermail = form.getvalue('usermail')
 userPwd = form.getvalue('userpwd')
 
 # usermail = "ravi@gmail.com"
-# userpwd = "ravi1234"
+# userPwd = "ravi123"
 
-# def login():
-#     if username == userPwd:
-#         return "Login Successfull " + username
-#     else:
-#         return "Login Failed"
-
-
-def registerhtml(data):
+def printHtml(data):
     print("Content-type:text/html\r\n\r\n")
     print("""
     <!DOCTYPE html>
@@ -33,22 +26,45 @@ def registerhtml(data):
         <title>Title</title>
     </head>
     <body>
+    """)
+
+    if usermail and userPwd in data:
+        print("""
     <h1>Welcome to python CGI</h1>
     <h2>Name is {}</h2>
     <h2>Email is {}</h2>
     <h2>Country is {}</h2>
     <h2>Gender is {}</h2>
+    <a href="../homePage.html">Home</a>
+    <a href="../changePassword.html">Change Password</a>
+    """.format(data[0], data[1], data[3], data[4]))
+    else:
+        print("""
+    <h1>Login Failed</h1>
+    <a href="../homePage.html">Home</a>
+    """)
+
+    print("""
     </body>
     </html>
-    """.format(data[0], data[1], data[3], data[4]))
+    """)
+
 
 def loginUser():
+    data = ()
     query = "SELECT * FROM users WHERE UserEmail = %s AND UserPwd = %s"
 
     cursor.execute(query, (usermail, userPwd))
-    for data in cursor:
-        pass
+    # for d in cursor:
+    #     data.append(d)
 
-    registerhtml(data)
+    try:
+        for d in cursor:
+            data = d
+        printHtml(data)
+    except Exception as ex:
+        print("Exception...",ex)
+
+    # registerhtml(d)
 
 loginUser()
